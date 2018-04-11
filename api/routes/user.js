@@ -5,8 +5,9 @@ const bcrypt=require('bcrypt')
 const jwt=require('jsonwebtoken')
 const UserController=require('../controllers/users')
 const User = require('../models/user')
+const checkAuth = require("../middleware/chechAuth")
 
-router.get('/',(req,res,next)=>{
+router.get('/',checkAuth,(req,res,next)=>{
     User.find().then(result=>{
         res.json({
             user:result
