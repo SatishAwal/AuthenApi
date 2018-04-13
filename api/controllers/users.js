@@ -58,37 +58,42 @@ exports.users_delete = (req, res, next) => {
 }
 
 exports.users_post_login = (req, res, next) => {
-    User.findOne({ email: req.body.email }).exec().then(result => {//here result is array of Users
+    
+     User.findOne({ email: req.body.email }).exec().then(result => {//here result is array of Users
         if (!result) {
-            return res.status(404).json({
-                message: "Auth --Failed"
+            return res.json({
+                success:false,
+                message: "Auth Failed"
             })
         }
         else {
             bcrypt.compare(req.body.password, result.password, (err, resu) => {
                 if (err) {
-                    return res.status(404).json({
+                    return res.json({
+                        success:false,
                         message: "Auth Failed"
                     });
                 }
                 if (resu) {
                     const token = jwt.sign({
                         email: result.email,
-                        _id: result._id
+                        _id: result._id//payload
                     },
                         'secret',
                         {
                             expiresIn: '1h'
                         });
                     return res.status(200).json({
+                        success:true,
                         message: "Auth Successful",
                         token: token
                     })
                 }
-                res.status(404).json({
-                    message: "Auth Failed"
+                res.json({
+                    success:false,
+                    message: "Auth Fail"
                 });
             })
         }
-    })
+    }) 
 }
