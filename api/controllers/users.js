@@ -11,7 +11,8 @@ exports.users_post_signup = (req, res, next) => {
         .then(user => {
             console.log("User Found:", user);
             if (user.length >= 1) {
-                return res.status(409).json({
+                return res.json({
+                    success:false,
                     message: "User already exists"
                 })
             }
@@ -25,13 +26,30 @@ exports.users_post_signup = (req, res, next) => {
                     else {
                         const user = new User({
                             _id: mongoose.Types.ObjectId(),
+                            firstName:req.body.firstName,
+                            lastName:req.body.lastName,
                             email: req.body.email,
                             password: hash
                         })
                         user.save().then(result => {
                             console.log("Result", result)
+
+                            const token = jwt.sign({
+                                email: result.email,
+                                _id: result._id//payload
+                            },
+                                'secret',
+                                {
+                                    expiresIn: '1h'
+                                });
                             res.status(200).json({
-                                message: "User Created"
+                                _id:result._id,
+                                success:true,
+                                firstName:result.firstName,
+                                lastName:result.lastName,
+                                email:result.email,
+                                message: "User Created",
+                                token
                             })
                         })
                             .catch(err => {
@@ -51,7 +69,7 @@ exports.users_post_signup = (req, res, next) => {
 exports.users_delete = (req, res, next) => {
     const id = req.params.userId
     User.remove({ _id: id }).exec().then(result => {
-        res.status(200).json({
+        res.json({
             message: "User deleted"
         })
     })
@@ -83,7 +101,7 @@ exports.users_post_login = (req, res, next) => {
                         {
                             expiresIn: '1h'
                         });
-                    return res.status(200).json({
+                    return res.json({
                         success:true,
                         message: "Auth Successful",
                         token: token

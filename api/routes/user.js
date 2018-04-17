@@ -20,10 +20,11 @@ router.get('/',checkAuth,(req,res,next)=>{
     });
 })
 
+router.post('/login',UserController.users_post_login)
+
 router.post('/signup', UserController.users_post_signup) 
 
 router.delete('/:userId',UserController.users_delete)
 
-router.post('/login',UserController.users_post_login)
 
 module.exports = router;
