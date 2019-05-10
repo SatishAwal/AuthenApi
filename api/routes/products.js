@@ -32,12 +32,12 @@ const upload=multer(
 
 router.get("/", ProductsController.products_get_all);
 
-router.post("/", checkAuth, upload.single('productImage'), ProductsController.products_post)
+router.post("/", upload.single('productImage'),ProductsController.products_post)
 
-router.get("/:productId", ProductsController.products_getBy_id)
+router.get("/:productId",ProductsController.products_getBy_id)
 
-router.patch("/:productId", checkAuth, ProductsController.products_getBy_id);
+router.patch("/:productId",ProductsController.products_getBy_id);
 
-router.delete('/:productId', checkAuth,ProductsController.products_delete);
+router.delete('/:productId',ProductsController.products_delete);
 
 module.exports=router;

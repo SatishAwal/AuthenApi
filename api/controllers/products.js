@@ -7,7 +7,6 @@ exports.products_get_all = (req, res, next) => {
         .exec()
         .then(docs => {
             const response = {
-                count: docs.length,
                 products: docs.map(doc => {
                     return {
                         name: doc.name,
@@ -38,6 +37,7 @@ exports.products_get_all = (req, res, next) => {
 }
 
 exports.products_post = (req, res, next) => {
+   // console.log(req.body,"post product")
     console.log("Req File:", req.file);
     const product = new Product({
         _id: new mongoose.Types.ObjectId(),
